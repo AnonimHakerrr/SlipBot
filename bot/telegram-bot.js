@@ -30,9 +30,10 @@ bot.on('message', async (msg) => {
 });
 
  
-//  bot.launch();
+ bot.launch();
 
 
 bot.startPolling();
 
- export {bot};
+ 
+export default  {bot};
