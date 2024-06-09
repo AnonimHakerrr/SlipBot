@@ -1,6 +1,22 @@
 {
-  "rules": {
-    ".read": false,
-    ".write": false
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ], "predeploy":["npm run build"]
+  },
+  "hostingbot":{
+    "target": "chatbot",
+    "public": "functions",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    ,"predeploy":["node ./bot/telegram-bot.js"]
   }
 }

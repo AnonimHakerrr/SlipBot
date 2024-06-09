@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase/firebase-settings.js';
- 
 import Button from './components/Button';
 import Balance from './components/Balance';
 
+const bot = window.Telegram.WebApp;
 
- 
-    const bot = window.Telegram.WebApp;
- 
- 
 const App = () => {
   const [balance, setBalance] = useState(0);
+  const [username, setUsername] = useState('');
   const [canCollect, setCanCollect] = useState(true);
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      // Перевірка наявності даних користувача
+    const fetchUserData = async () => {
       if (bot.initDataUnsafe && bot.initDataUnsafe.user) {
-        const userId = bot.initDataUnsafe.user.id; // Отримання ID користувача
-
-        // Запит до Firebase для отримання балансу
+        const userId = bot.initDataUnsafe.user.id;
+        const userName = bot.initDataUnsafe.user.first_name;
+        setUsername(userName); // Збереження імені користувача
+console.log("id",userId);
         const userRef = db.collection('users').doc(userId.toString());
         const userDoc = await userRef.get();
         if (userDoc.exists) {
@@ -32,16 +29,14 @@ const App = () => {
       }
     };
 
-    fetchBalance();
+    fetchUserData();
   }, []);
 
   const handleCollect = async () => {
     if (bot.initDataUnsafe && bot.initDataUnsafe.user) {
       const userId = bot.initDataUnsafe.user.id;
-      console.log("id",userId);
       const userRef = db.collection('users').doc(userId.toString());
       const userDoc = await userRef.get();
-      console.log("db",userDoc);
       if (userDoc.exists) {
         const newBalance = userDoc.data().balance + 1;
         await userRef.update({ balance: newBalance });
@@ -60,14 +55,13 @@ const App = () => {
 
   return (
     <div>
+      <h1>Привіт, {username}!</h1>
       <Balance balance={balance} />
-      <Button onClick={handleCollect} disabled={ canCollect}>
-        Накопичити монетку
+      <Button onClick={handleCollect} disabled={!canCollect}>
+        Copy
       </Button>
     </div>
   );
 };
 
 export default App;
- 
-//commonjs
