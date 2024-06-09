@@ -32,7 +32,9 @@ bot.on('message', async (msg) => {
  
  
 
-
+export const telegramBot = functions.https.onRequest((req, res) => {
+  bot.handleUpdate(req.body, res);
+});
 bot.startPolling();
 
  

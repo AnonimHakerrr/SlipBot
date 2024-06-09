@@ -1,6 +1,7 @@
 {
   "hosting": {
-    "public": "public",
+    "target": "sliptchatbot",
+    "public": "public",  
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -8,15 +9,20 @@
     ],
     "rewrites": [
       {
+        "source": "/bot/**",
+        "function": "telegramBot"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
-    ], "predeploy":["npm run build"]
+    ],
+    "predeploy": ["npm run build --prefix frontend"]
   },
-  "hostingbot":{
-    "target": "chatbot",
-    "public": "functions",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-    ,"predeploy":["node ./bot/telegram-bot.js"]
+  "functions": {
+    "source": "bot"
   }
+ 
+
+    
 }

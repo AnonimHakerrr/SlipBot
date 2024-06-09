@@ -1,5 +1,17 @@
 {
   "projects": {
-    "default": "sliptchatbot"
-  }
+    "default": "sliptchatbot",
+    "S.A": "sliptchatbot"
+  },
+  "targets": {
+    "sliptchatbot": {
+      "hosting": {
+        "sliptchatbot": [
+          "sliptchatbot"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
