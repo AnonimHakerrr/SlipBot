@@ -2,8 +2,7 @@ import { Telegraf } from 'telegraf';
 import admin from 'firebase-admin';
 // Ініціалізація Firebase Admin SDK
 import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
-
-admin.initializeApp({
+ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
@@ -28,13 +27,8 @@ bot.on('message', async (msg) => {
       bot.sendMessage(userId, 'Unknown command');
   }
 });
-
- 
  
 
-export const telegramBot = functions.https.onRequest((req, res) => {
-  bot.handleUpdate(req.body, res);
-});
 bot.startPolling();
 
  
