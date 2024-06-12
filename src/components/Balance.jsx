@@ -3,7 +3,7 @@ import React from 'react';
 const Balance = ({ balance }) => {
   return (
     <div>
-      Ваш баланс: {balance} монеток
+      Ваш баланс : {balance} монеток
     </div>
   );
 };

@@ -10,13 +10,13 @@ const useCountdown = (initialSeconds, onDone) => {
     if (isActive && seconds > 0) {
       intervalId = setInterval(() => {
         setSeconds((prevSeconds) => prevSeconds - 1);
-      }, 1000);
+      }, 650);
     } else if (seconds === 0) {
       setIsActive(false);
       onDone();
     }
 
-    return () => clearInterval(intervalId);
+return () => clearInterval(intervalId);
   }, [isActive, seconds, onDone]);
 
   const startCountdown = (initialTime) => {
@@ -24,10 +24,10 @@ const useCountdown = (initialSeconds, onDone) => {
     setIsActive(true);
   };
 
-  const resetCountdown = () => {
-    setIsActive(false);
-    setSeconds(initialSeconds);
-  };
+const resetCountdown = () => {
+setIsActive(false);
+setSeconds(initialSeconds);
+};
 
   return { seconds, startCountdown, resetCountdown, isActive };
 };

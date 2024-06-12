@@ -2,27 +2,69 @@ import React, { useState, useEffect } from 'react';
 import useCountdown from './components/useCountdown';
 import formatTime from './components/formatTime';
 import './App.css';
+import './firebase/firebaseConfig';  
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore"; 
 
- 
- 
+const db = getFirestore();
+const bot = window.Telegram.WebApp;
 
 const App = () => {
   const [balance, setBalance] = useState(0);
-  const [canCollect, setCanCollect] = useState(true);
+  const [canCollect, setCanCollect] = useState(false);
   const [accumulated, setAccumulated] = useState(0);
-  const { seconds, startCountdown, resetCountdown, isActive } = useCountdown(18000, () => {
-    setBalance((prevBalance) => prevBalance + accumulated);
+  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
+  const { seconds, startCountdown, resetCountdown, isActive } = useCountdown(4, () => {
+    const newBalance=balance+accumulated;
+   
     setAccumulated(0);
     setCanCollect(true);
-    localStorage.clear();
+    updateUserBalanceInFirestore(newBalance);
+    resetCountdown(); 
   });
 
+  // Функція для збереження балансу у Firestore
+  const updateUserBalanceInFirestore = async (newBalance) => {
+    try {
+      const userDoc = doc(db, 'users', userId.toString() );
+      await setDoc(userDoc, { balance: newBalance }, { merge: true });
+      console.log('User balance updated successfully');
+    } catch (error) {
+      console.error('Error updating user balance: ', error);
+    }
+  };
+  const fetchUserBalance = async () => {
+    try {
+        const userDoc = doc(db, 'users', userId.toString() );
+        const userSnap = await getDoc(userDoc);
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            setBalance(userData.balance); // Встановлюємо баланс користувача в стан
+        }
+    } catch (error) {
+        console.error('Error fetching user balance: ', error);
+    }}
+  useEffect(() => {
+  
+      if (bot.initDataUnsafe && bot.initDataUnsafe.user) {
+        const userid = bot.initDataUnsafe.user.id;
+        const username = bot.initDataUnsafe.user.first_name;
+        setUsername(username); 
+        setUserId(userid);
+    
+    
+    
+    };
+    fetchUserBalance();
+      }
+ , []);
+
   const handleCollect = () => {
+    
     if (canCollect) {
       setCanCollect(false);
       setAccumulated(0);
-      startCountdown(18000);
-      localStorage.clear();
+      startCountdown(4);
     }
   };
 
@@ -30,52 +72,54 @@ const App = () => {
     let accumulationInterval;
     if (isActive) {
       accumulationInterval = setInterval(() => {
-        setAccumulated((prevAccumulated) => prevAccumulated + (50 / 18000));
+        setAccumulated((prevAccumulated) => prevAccumulated + 1.52 );
       }, 1000);
+    } else {
+      setAccumulated(0);
     }
 
     return () => clearInterval(accumulationInterval);
   }, [isActive]);
-
   useEffect(() => {
     const savedTimeLeft = localStorage.getItem('timeLeft');
-    const savedBalance = localStorage.getItem('balance');
-    const savedAccumulated = localStorage.getItem('accumulated');
+     const savedAccumulated = localStorage.getItem('accumulated');
     const savedStartTime = localStorage.getItem('startTime');
 
-    if (savedTimeLeft !== null && savedBalance !== null && savedAccumulated !== null && savedStartTime !== null) {
+    if (savedTimeLeft !== null  && savedAccumulated !== null && savedStartTime !== null) {
       const currentTime = Date.now();
       const elapsedTime = Math.floor((currentTime - parseInt(savedStartTime, 10)) / 1000);
       const remainingTime = Math.max(0, parseInt(savedTimeLeft, 10) - elapsedTime);
 
-      setBalance(parseFloat(savedBalance));
-      setAccumulated(parseFloat(savedAccumulated) + (elapsedTime * 50 / 18000));
+      
+      setAccumulated(parseFloat(savedAccumulated) + (elapsedTime * 1.52  ));
       setCanCollect(false);
       startCountdown(remainingTime);
+
     }
-  }, [startCountdown]);
+  }, [ ]);
 
   useEffect(() => {
     if (!canCollect) {
       localStorage.setItem('timeLeft', seconds);
-      localStorage.setItem('balance', balance);
+    
       localStorage.setItem('accumulated', accumulated);
       localStorage.setItem('startTime', Date.now().toString());
-    }
-}, [canCollect]);
+    } 
+    
+  }, [canCollect ]);
+ 
+ 
+return (
+  <div>
+    <h1>Username: {username}</h1>
+    <h2>Balance: {balance.toFixed(2)}</h2>
+    <h3>Accumulated: {accumulated.toFixed(2)}</h3>
+    <button onClick={handleCollect} disabled={!canCollect}>
+      {canCollect ? 'Collect' : `Wait ${formatTime(seconds)}`}
+    </button>
+  </div>
+);
 
-// Приберіть змінні стану зі списку залежностей
-
-
-  return (
-    <div>
-      <h1>Balance: {balance.toFixed(2)}</h1>
-      <h2>Accumulated: {accumulated.toFixed(2)}</h2>
-      <button onClick={handleCollect} disabled={!canCollect}>
-        {canCollect ? 'Collect' : `Wait ${formatTime(seconds)}`}
-      </button>
-    </div>
-  );
 };
 
 export default App;
