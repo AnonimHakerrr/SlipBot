@@ -1,7 +1,6 @@
 import { Telegraf } from 'telegraf';
 import admin from 'firebase-admin';
-// Ініціалізація Firebase Admin SDK
-import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
+ import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
  admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -20,7 +19,9 @@ bot.on('message', async (msg) => {
       const userRef = db.collection('users').doc(userId.toString());
       const userData = await userRef.get();
       if (!userData.exists) {
-        await userRef.set({ userId, balance: 0 });
+        const currentTime = new Date();
+
+        await userRef.set({ userId, balance: 0 ,time:currentTime});
       }
       break;
     default:
@@ -28,7 +29,7 @@ bot.on('message', async (msg) => {
   }
 });
  
-
-bot.startPolling();
+ 
+bot.launch();
 
  
