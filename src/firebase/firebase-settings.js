@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCMT9V8HK7I415jK-6p-MsSol_pg6qeIjk",
+    apiKey: process.env.API_TOKEN,
     authDomain: "sliptchatbot.firebaseapp.com",
     databaseURL: "https://sliptchatbot-default-rtdb.firebaseio.com",
     projectId: "sliptchatbot",

@@ -7,7 +7,7 @@ import admin from 'firebase-admin';
 
 const db = admin.firestore();
 
- const token = '6034069384:AAEXtnuQ2X3wOzAnu3B7jnJEQ4GHOMiWsX8';
+ const token = process.env.MY_SECRET_KEY;
 const bot = new Telegraf(token, { polling: true });
 bot.on('message', async (msg) => {
   const userId = msg.from.id;
