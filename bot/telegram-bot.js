@@ -21,7 +21,7 @@ bot.on('message', async (msg) => {
       if (!userData.exists) {
         const currentTime = new Date();
 
-        await userRef.set({ userId, balance: 0 ,time:currentTime});
+        await userRef.set({ userId, balance: 0  });
       }
       break;
     default:
