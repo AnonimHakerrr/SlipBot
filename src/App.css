@@ -1,23 +1,145 @@
+*{
+  margin: 0;
+  padding: 0;
+}
 .container {
   position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  
 }
 
-.background {
+.background-video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  
-  background-image: url('./assets/bag.gif'); /* Замініть шлях на ваш анімований GIF */
-  background-size: cover;
-  z-index: -1; /* Переміщаємо фон назад, за контент */
+  object-fit: cover;
+  z-index: -1;
 }
 
-.content {
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Чорний колір з прозорістю 50% */
+  z-index: -1;
+}
+
+.text {
+  font-family:Gill Sans, sans-serif;
+  z-index: 1;
+  top:5rem;
   position: relative;
-  z-index: 1; /* Контент розташовується поверх фону */
+  display: block;
   text-align: center;
-  padding: 50px;
-  color: white; /* Колір тексту на ваш смак */
+  
+}
+.balance-icon {
+  width: 74px; /* Задайте потрібний розмір зображення */
+  height: 74px;
+  vertical-align: middle; /* Вирівнювання по вертикалі */
+  margin-right: 4px; /* Відступ справа для відділення від тексту */
+}
+.text h1 {
+  font-size: 75px;
+}
+.text h2 {
+  font-size: 65px;
+}
+.btn {width: 23rem;
+  position: fixed;
+  bottom: 100px; /* Встановлюємо відстань від нижнього краю */
+  left: 50%; /* Розміщуємо по центру горизонталі */
+  transform: translateX(-50%); /* Центруємо по горизонталі */
+  display: block;
+  margin: 0 auto;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 20px 80px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.btn:hover {
+  background-color: #444;
+}
+
+.btn:active {
+  background-color: #555;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px; /* Висота прогрес-бару */
+  background-color: #76c7c0; /* Колір прогрес-бару */
+  z-index: 0;
+  transition: width 0.25s; /* Анімація зміни ширини */
+}
+.time {  
+  font-family:Gill Sans, sans-serif;
+  font-size: 14px;
+  float: right; /* Вирівнюємо вправо */
+}
+
+.btnText {  font-family:Gill Sans, sans-serif;
+
+  display: inline-block; /* Забезпечуємо інлайновий блок */
+  font-size: 16px;
+  margin: 0 auto; /* Вирівнюємо по центру горизонталі */
+  text-align: center; /* Центруємо текст всередині блоку */
+}
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+   position: fixed;
+  bottom: 0;
+}
+
+.social-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-icons a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 50px;
+}
+
+.social-icons a i {
+  font-size: 20px;
+  margin-bottom: 5px; /* Відступ між іконкою і текстом */
+}
+
+.social-icons a img {
+  width:60px; /* Розмір іконок */
+  height: auto;
+ 
+}
+
+.social-icons a p {
+  margin: 0;
+  text-align: center;
+  font-size: 12px; /* Розмір тексту */
+  color: white; /* Колір тексту */
 }

@@ -4,7 +4,10 @@ import formatTime from './components/formatTime';
 import './App.css';
 import './firebase/firebaseConfig';  
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore"; 
-
+import backgroundVideo from './assets/background-video.mp4';
+import sliptImage from './assets/slipt.png';
+import homeImage from './assets/home.png';
+import taskImage from './assets/task.png';
 const db = getFirestore();
 const bot = window.Telegram.WebApp;
 
@@ -14,11 +17,13 @@ const App = () => {
   const [accumulated, setAccumulated] = useState(0);
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
-  const { seconds, startCountdown, resetCountdown, isActive} = useCountdown(4, () => {
+  const [ progress, setProgress] = useState(0);
+  const { seconds, startCountdown, resetCountdown, isActive} = useCountdown(18000, () => {
     const newBalance = balance + accumulated;
     setBalance(newBalance);
     setCanCollect(true);
     setAccumulated(0);
+    setProgress(0);
     updateUserBalanceInFirestore(userId, newBalance);
     resetCountdown(); 
   });
@@ -60,7 +65,7 @@ const App = () => {
     if (canCollect) {
       setCanCollect(false);
       setAccumulated(0);
-      startCountdown(4);
+      startCountdown(18000);
       localStorage.clear();
     }
   };
@@ -68,8 +73,9 @@ const App = () => {
   useEffect(() => {
     let accumulationInterval;
     if (isActive) {
+
       accumulationInterval = setInterval(() => {
-        setAccumulated((prevAccumulated) => prevAccumulated + 1.52);
+        setAccumulated((prevAccumulated) => prevAccumulated + 0.01);
       }, 1000);
     } else {
       setAccumulated(0);
@@ -108,16 +114,55 @@ const App = () => {
       localStorage.setItem('canCollect', canCollect);
     }
   }, [seconds, accumulated, balance, canCollect]);
-
+  useEffect(() => {
+    const progressValue = ((18000 - seconds) / 18000) * 100;
+    setProgress(progressValue);
+  }, [seconds]);
   return (
-    <div>
-      <h1>Username: {username}</h1>
-      <h2>Balance: {balance.toFixed(2)}</h2>
-      <h3>Accumulated: {accumulated.toFixed(2)}</h3>
-      <button onClick={handleCollect} disabled={!canCollect}>
-        {canCollect ? 'Collect' : `Wait ${formatTime(seconds)}`}
+    <div className='container'>
+<video className='background-video' autoPlay muted loop playsInline>
+  <source src={backgroundVideo} type='video/mp4' />
+</video> 
+<div className='overlay'></div>
+
+
+   <div className='text'>
+     
+     <h1>{username}</h1>
+      <h2> <img src={sliptImage} alt='icon' className='balance-icon' /> : {balance.toFixed(2)}</h2>
+      </div>  
+      <button className='btn' onClick={handleCollect} disabled={!canCollect}>
+      <div className='btn-content'>
+                    {canCollect ? 'Collect' : (
+                        <React.Fragment>
+                            <p className='btnText'>Farming: {accumulated.toFixed(2)}</p>  
+                            <span className='time'>{formatTime(seconds)}</span>
+                        </React.Fragment>
+                    )}
+                </div>
+                <div className='progress-bar' style={{ width: `${progress}%` }}></div>
+        
       </button>
+      <div className='footer'>
+         
+          <div className='social-icons'>
+            <a href='#'><svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
+</svg>
+ <p>Home</p> </a>
+            <a href='https://bit.ly/whitebit_crypt0'><svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z"/>
+</svg>
+<p>Task</p> </a>
+            <a href='#'><svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 6H5m2 3H5m2 3H5m2 3H5m2 3H5m11-1a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2M7 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm8 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
+</svg>
+ <p>Frends</p> </a>
+          </div>
+        </div>
+        
     </div>
+    
   );
 };
 
